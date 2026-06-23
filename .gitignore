@@ -6,6 +6,8 @@
 /bin-int
 /bin
 
+/MultiAgents/obj
+/Sample/obj
 
 *.user
 *.sln
