@@ -100,15 +100,47 @@ public class AgentFactory(Configuration configuration)
             name: "DelegateAgent",
             tools:
             [
-                CreateStringAgent().AsAIFunction(new AIFunctionFactoryOptions(
+                CreateStringAgent().AsAIFunction(new AIFunctionFactoryOptions
                 {
                     Name = "StringAgentAsTool"
                 }),
-                CreateNumberAgent().AsAIFunction(new AIFunctionFactoryOptions(
+                CreateNumberAgent().AsAIFunction(new AIFunctionFactoryOptions
                 {
                     Name = "NumberAgentAsTool"
                 })
             ]
+        );
+
+        AIAgent agent = baseAgent
+            .AsBuilder()
+            .Use(FunctionCallMiddleware)
+            .Build();
+
+        return agent;
+    }
+    
+    public AIAgent CreateSummaryAgent()
+    {
+        AIAgent baseAgent = new ChatClientAgent(
+            CreateAiClient(),
+            instructions: "你是一个摘要工具",
+            name: "SummaryAgent"
+        );
+
+        AIAgent agent = baseAgent
+            .AsBuilder()
+            .Use(FunctionCallMiddleware)
+            .Build();
+
+        return agent;
+    }
+    
+    public AIAgent CreateTranslateAgent()
+    {
+        AIAgent baseAgent = new ChatClientAgent(
+            CreateAiClient(),
+            instructions: "你是一个翻译工具",
+            name: "TranslateAgent"
         );
 
         AIAgent agent = baseAgent
