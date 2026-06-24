@@ -183,6 +183,54 @@ public class AgentFactory(Configuration configuration)
         return agent;
     }
     
+    public AIAgent CreateIntentAgent()
+    {
+        AIAgent baseAgent = new ChatClientAgent(
+            CreateAiClient(),
+            instructions: "你是一个判断工具，负责将任务转达给合适的工具，自己不做额外处理",
+            name: "IntentAgent"
+        );
+
+        AIAgent agent = baseAgent
+            .AsBuilder()
+            .Use(FunctionCallMiddleware)
+            .Build();
+
+        return agent;
+    }
+    
+    public AIAgent CreateMovieAgent()
+    {
+        AIAgent baseAgent = new ChatClientAgent(
+            CreateAiClient(),
+            instructions: "你是一个电影工具",
+            name: "MovieAgent"
+        );
+
+        AIAgent agent = baseAgent
+            .AsBuilder()
+            .Use(FunctionCallMiddleware)
+            .Build();
+
+        return agent;
+    }
+    
+    public AIAgent CreateMusicAgent()
+    {
+        AIAgent baseAgent = new ChatClientAgent(
+            CreateAiClient(),
+            instructions: "你是一个音乐工具",
+            name: "MovieAgent"
+        );
+
+        AIAgent agent = baseAgent
+            .AsBuilder()
+            .Use(FunctionCallMiddleware)
+            .Build();
+
+        return agent;
+    }
+    
     private IChatClient CreateAiClient()
     {
         OpenAIClient client = new OpenAIClient(new ApiKeyCredential(configuration.apiKey), new OpenAIClientOptions

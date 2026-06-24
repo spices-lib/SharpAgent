@@ -142,3 +142,70 @@ static async void Concurrent()
         Console.WriteLine($"{msg.Text}");
     }
 }
+
+static async void Handoff()
+{
+    Configuration configuration = new Configuration
+    {
+        apiKey   = Environment.GetEnvironmentVariable("DEEPSEEK_API_KEY"),
+        endpoint = "https://api.deepseek.com/v1",
+        model    = "deepseek-v4-flash"
+    };
+    
+    AgentFactory agentFactory = new(configuration);
+    
+    AIAgent intentAgent = agentFactory.CreateIntentAgent();
+    AIAgent movieAgent = agentFactory.CreateMovieAgent();
+    AIAgent musicAgent = agentFactory.CreateMusicAgent();
+
+    while (true)
+    {
+        List<ChatMessage> message = [];
+        Workflow workflow = AgentWorkflowBuilder.CreateHandoffBuilderWith(intentAgent)
+            .WithHandoffs(intentAgent, [movieAgent, musicAgent])
+            .WithHandoffs([movieAgent, musicAgent], intentAgent)
+            .Build();
+        
+        Console.WriteLine("请输入：");
+        message.Add(new(ChatRole.User, Console.ReadLine()!));
+        message.AddRange(await RunWorkflowAsync(workflow, message));
+    }
+    
+    static async Task<List<ChatMessage>> RunWorkflowAsync(Workflow workflow, List<ChatMessage> message)
+    {
+        string? lsatExecutorId = null;
+        
+        StreamingRun run = await InProcessExecution.RunStreamingAsync(workflow, message);
+        await run.TrySendMessageAsync(new TurnToken(emitEvents: true));
+        await foreach (WorkflowEvent @event in run.WatchStreamAsync())
+        {
+            switch (@event)
+            {
+                case AgentResponseUpdateEvent e:
+                {
+                    if (e.ExecutorId != lsatExecutorId)
+                    {
+                        lsatExecutorId = e.ExecutorId;
+                        Console.WriteLine();
+                        Console.WriteLine($"{ e.Update.AuthorName ?? e.ExecutorId}");
+                    }
+                    
+                    Console.Write(e.Update.Text);
+                    if (e.Update.Contents.OfType<FunctionCallContent>().FirstOrDefault() is FunctionCallContent call)
+                    {
+                        Console.WriteLine();
+                        Console.WriteLine($"{call.Name} with {call.Arguments}");
+                    }
+
+                    break;
+                }
+                case WorkflowOutputEvent e:
+                {
+                    return e.As<List<ChatMessage>>();
+                }
+            }
+        }
+
+        return [];
+    }
+}
