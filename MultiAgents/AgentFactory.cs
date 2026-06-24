@@ -151,6 +151,38 @@ public class AgentFactory(Configuration configuration)
         return agent;
     }
     
+    public AIAgent CreateLegalAgent()
+    {
+        AIAgent baseAgent = new ChatClientAgent(
+            CreateAiClient(),
+            instructions: "你是一个文本合法性检查工具",
+            name: "LegalAgent"
+        );
+
+        AIAgent agent = baseAgent
+            .AsBuilder()
+            .Use(FunctionCallMiddleware)
+            .Build();
+
+        return agent;
+    }
+    
+    public AIAgent CreateSpellingErrorAgent()
+    {
+        AIAgent baseAgent = new ChatClientAgent(
+            CreateAiClient(),
+            instructions: "你是一个文本拼写检查工具",
+            name: "SpellingErrorAgent"
+        );
+
+        AIAgent agent = baseAgent
+            .AsBuilder()
+            .Use(FunctionCallMiddleware)
+            .Build();
+
+        return agent;
+    }
+    
     private IChatClient CreateAiClient()
     {
         OpenAIClient client = new OpenAIClient(new ApiKeyCredential(configuration.apiKey), new OpenAIClientOptions

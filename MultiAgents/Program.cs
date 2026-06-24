@@ -97,3 +97,48 @@ static async void Sequential()
         Console.WriteLine($"{msg.Text}");
     }
 }
+
+static async void Concurrent()
+{
+    Configuration configuration = new Configuration
+    {
+        apiKey   = Environment.GetEnvironmentVariable("DEEPSEEK_API_KEY"),
+        endpoint = "https://api.deepseek.com/v1",
+        model    = "deepseek-v4-flash"
+    };
+    
+    AgentFactory agentFactory = new(configuration);
+    
+    AIAgent legalAgent = agentFactory.CreateLegalAgent();
+    AIAgent spellingErrorAgent = agentFactory.CreateSpellingErrorAgent();
+
+    Workflow workflow = AgentWorkflowBuilder.BuildConcurrent([legalAgent, spellingErrorAgent]);
+
+    string legalText = """
+                       假设这里有一段巨长的文章
+                       """;
+
+    var message = new List<ChatMessage>
+    {
+        new (ChatRole.User, legalText) 
+    };
+
+    StreamingRun run = await InProcessExecution.RunStreamingAsync(workflow, message);
+    await run.TrySendMessageAsync(new TurnToken(emitEvents: true));
+
+    List<ChatMessage> result = new();
+    await foreach (WorkflowEvent evt in run.WatchStreamAsync().ConfigureAwait(false))
+    {
+        if (evt is WorkflowOutputEvent completed)
+        {
+            result = (List<ChatMessage>)completed.Data;
+            break;
+        }
+    }
+    
+    foreach (ChatMessage msg in result.Where(x => x.Role != ChatRole.User))
+    {
+        Console.WriteLine($"{msg.AuthorName}");
+        Console.WriteLine($"{msg.Text}");
+    }
+}
