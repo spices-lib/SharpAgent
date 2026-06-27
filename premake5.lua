@@ -18,3 +18,4 @@ nugets =
 
 include "Sample"
 include "MultiAgents"
+include "Response"

@@ -8,6 +8,7 @@
 
 /MultiAgents/obj
 /Sample/obj
+/Response/obj
 
 *.user
 *.sln
