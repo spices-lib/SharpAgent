@@ -137,6 +137,12 @@ tools.Add(getPersonsTool);
 tools.Add(getPersonTool);
 tools.Add(searchTool);
 
+// Chat Recucer
+#pragma warning disable MEAI001
+IChatReducer chatReducer = new MessageCountingChatReducer(targetCount: 4);
+IChatReducer chatReducer1 = new SummarizingChatReducer(chatClient, targetCount: 1, threshold: 10);
+#pragma warning restore MEAI001
+
 // Agent
 AIAgent baseAgent = new ChatClientAgent(
     chatClient,

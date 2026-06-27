@@ -26,7 +26,7 @@ OpenAIClient client = new OpenAIClient(new ApiKeyCredential(apiKey), new OpenAIC
 }
 );
 
-// Deepseek do not support response API
+// Deepseek do not support response API/AI Fonduray(not free)
 ResponsesClient responseClient = client.GetResponsesClient();
 
 
