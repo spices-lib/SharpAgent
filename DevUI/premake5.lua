@@ -1,4 +1,4 @@
-project "Agent2AgentClient"
+project "DevUI"
     kind "ConsoleApp"
     language "C#"
     dotnetframework "net10.0"

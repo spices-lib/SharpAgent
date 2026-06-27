@@ -15,6 +15,7 @@ project "AgentUIService"
     { 
         nugets,
         "Microsoft.Agents.AI.Workflows:1.11.1",
+        "Microsoft.Agents.AI.A2A:1.11.1-preview.260625.1",
         "Microsoft.Agents.AI.Hosting.A2A.AspNetCore:1.11.1-preview.260625.1",
     }
    
