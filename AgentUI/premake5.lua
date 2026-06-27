@@ -1,4 +1,4 @@
-group "Agent2Agent"
+group "AgentUI"
     include "Client"
     include "Service"
 group ""

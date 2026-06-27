@@ -11,6 +11,8 @@
 /Response/obj
 /Agent2Agent/Client/obj
 /Agent2Agent/Service/obj
+/AgentUI/Client/obj
+/AgentUI/Service/obj
 
 *.user
 *.sln
