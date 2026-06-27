@@ -6,8 +6,8 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-IL"
 
 nugets =
 { 
-    "Microsoft.Agents.AI:1.10.0",
-    "Microsoft.Agents.AI.OpenAI:1.10.0",
+    "Microsoft.Agents.AI:1.11.1",
+    "Microsoft.Agents.AI.OpenAI:1.11.1",
     "Microsoft.Extensions.Configuration:11.0.0-preview.5.26302.115",
     "Microsoft.Extensions.Configuration.UserSecrets:11.0.0-preview.5.26302.115",
     "ModelContextProtocol:1.4.0",
@@ -19,3 +19,4 @@ nugets =
 include "Sample"
 include "MultiAgents"
 include "Response"
+include "Agent2Agent"

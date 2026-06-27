@@ -9,6 +9,8 @@
 /MultiAgents/obj
 /Sample/obj
 /Response/obj
+/Agent2Agent/Client/obj
+/Agent2Agent/Service/obj
 
 *.user
 *.sln
